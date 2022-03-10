@@ -1,79 +1,169 @@
-import React from 'react'
-import { Image, Text, TouchableOpacity, View } from 'react-native'
-import { useNavigation } from '@react-navigation/native'
+import React, { useContext, useState } from 'react';
+import { useNavigation } from '@react-navigation/native';
+import { 
+  Alert,
+  Image, 
+  Keyboard, 
+  KeyboardAvoidingView,
+  Platform, 
+  Text,
+  TouchableOpacity, 
+  TouchableWithoutFeedback, 
+  View 
+} from 'react-native';
+import Feather from 'react-native-vector-icons/Feather'
+import { BorderlessButton } from 'react-native-gesture-handler';
+import { SafeAreaView } from 'react-native-safe-area-context';
+import * as yup from 'yup';
 
-import IllustrationImg from '../../../assets/images/IllustrationImg.png'
-import Logo  from '../../../assets/icon.png'
+import { Button } from '../../components/Button';
+import { ButtonSign } from '../../components/ButtonSign';
+import { Input } from '../../components/Input';
+import { useAuth } from '../../hook/auth';
+
+import { styles } from './styles';
+import { theme } from '../../global/theme';
 import GoogleIcon from '../../../assets/images/GoogleIcon.png'
 import FaceIcon from '../../../assets/images/FaceIcon.png'
-import { ButtonSign } from '../../components/ButtonSign'
-import { styles } from './styles'
-import { Background } from '../../components/Background'
-import { Button } from '../../components/Button'
-import { theme } from '../../global/theme'
+
 
 export function SignIn() {
-  const navigation = useNavigation()
+  const navigation = useNavigation()  
+  
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
 
-  const handleRegister = () => {
+  function handleGoBack() {
+    navigation.goBack();
+  }
+
+  function handleRegister() {
     navigation.navigate('SignUp');
   }
 
-  const handleSignInAnotherEmail = () => {
-    navigation.navigate('SignInAnotherEmail');
+  async function handleSignIn() {
+    try {
+      const Schema = yup.object().shape({
+        password: yup.string().required("Senha obrigatória!"),
+        email: yup.string().required("E-mail obrigatório!").email("Esse e-mail é inválido!")
+      });
+
+      await Schema.validate({ email, password });
+    } catch (error) {
+      if (error instanceof yup.ValidationError) {
+        return Alert.alert(error.message);
+      } else {
+        return Alert.alert(
+          "Erro na autenticação",
+          "Verifique suas credenciais."
+        );
+      }
+    }
   }
 
-  const handleHome = () => {
-    navigation.navigate('Home');
+  const { signInWithGoogle } = useAuth();
+
+  async function handleSignInWithGoogle() {
+    try {
+      await signInWithGoogle();
+
+    } catch (error) {
+      console.log(error);
+      Alert.alert('Não foi possível conectar com a conta Google');
+    }
   }
 
   return (
-    <Background>
-      <View style={styles.container}> 
-        <Text style={styles.title}>
-          Deixe o mundo{`\n`}
-          mais verde{`\n`}
-        </Text>
-           
-        <Image 
-          style={styles.image}
-          source={IllustrationImg}
-          resizeMode='stretch'
-        />
+    <SafeAreaView style={{ flex: 1 }}>    
+      <KeyboardAvoidingView
+        behavior='position' enabled
+        style={{ flex: 1 }}
+      >        
+        <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+          <View style={styles.container}>
+            <View 
+              style={styles.pagination}
+            >
+              <BorderlessButton onPress={handleGoBack}>
+                <Feather
+                  name='chevron-left'
+                  size={30}
+                  color={theme.color.highligh}
+                />
+              </BorderlessButton>
 
-        <View style={styles.content}>
-          
+              <Text style={styles.titlePagination}>Login</Text>
+            </View>
+            <View style={styles.content}>
+              <Image source={require('../../../assets/icon.png')} style={styles.logo} />
 
-          <Text style={styles.subtitle}>
-            Compre, venda ou troque plantas {`\n`}
-            e monte o seu jardim {`\n`}          
-          </Text>
+              <Text style={styles.title}>
+                Vamos lá.
+              </Text>
 
-          <ButtonSign 
-            source={GoogleIcon} 
-            title='Entrar com Google'
-            onPress={handleHome}
-          />
-          <ButtonSign 
-            source={FaceIcon} 
-            title='Entrar com Facebook' 
-          />
-          <Button 
-            title="Entrar com outro Email" 
-            style={{backgroundColor: theme.color.line}} 
-            onPress={handleSignInAnotherEmail}
-          />
+              <Text style={styles.subtitle}>
+                Escolha qual conta {`\n`}você quer entrar
+              </Text>
 
-          <Text style={styles.register}>ou</Text>
+              <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
+                <ButtonSign 
+                  source={GoogleIcon} 
+                  title='Google'
+                  onPress={handleSignInWithGoogle}
+                />
+                <ButtonSign 
+                  source={FaceIcon} 
+                  title='Facebook' 
+                />
+              </View>
+              
+              <Text style={styles.register}>ou</Text>
 
-          <TouchableOpacity 
-            activeOpacity={0.7}
-            onPress={handleRegister}
-          >
-            <Text style={styles.register}>Criar conta</Text>
-          </TouchableOpacity>
-        </View>
-      </View>
-    </Background>
+              <Input
+                iconName='mail'
+                value={email}
+                placeholder='E-mail'
+                onChangeText={setEmail}
+                keyboardType='email-address'
+              />
+              <Input
+                iconName='lock'
+                value={password}
+                placeholder='Senha'
+                onChangeText={setPassword}
+                secureTextEntry={true}
+              />
+            </View>
+            <View style={styles.footer}>              
+              <View>
+                <Button
+                  title='Entrar'
+                  onPress={handleSignIn}
+                />
+              </View>
+
+              <View style={styles.contentFooter}>
+                <Text style={styles.textQuestion}>
+                    Esqueceu a senha?
+                </Text>
+                <TouchableOpacity
+                    activeOpacity={0.7}
+                >
+                    <Text style={styles.buttonLogin}>
+                        Clique aqui
+                    </Text>
+                </TouchableOpacity>
+              </View>
+                <TouchableOpacity 
+                  activeOpacity={0.7}
+                  onPress={handleRegister}
+                >
+                  <Text style={styles.createAccount}>Criar conta</Text>
+                </TouchableOpacity>
+            </View>
+          </View>
+        </TouchableWithoutFeedback>
+      </KeyboardAvoidingView>
+    </SafeAreaView>
   )
 }

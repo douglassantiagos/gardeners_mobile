@@ -3,8 +3,8 @@ import { createStackNavigator } from '@react-navigation/stack';
 
 import { theme } from '../global/theme';
 import { SignUp } from '../screens/SignUp';
+import { Welcome } from '../screens/Welcome';
 import { SignIn } from '../screens/SignIn';
-import { SignInAnotherEmail } from '../screens/SignInAnotherEmail';
 import { Home } from '../screens/Home';
 
 const { Navigator, Screen } = createStackNavigator();
@@ -20,8 +20,8 @@ export function AppRoutes() {
       }}
     >
       <Screen
-        name='SignIn'
-        component={SignIn}
+        name='Welcome'
+        component={Welcome}
       />
 
       <Screen 
@@ -30,8 +30,8 @@ export function AppRoutes() {
       />
 
       <Screen 
-        name='SignInAnotherEmail'
-        component={SignInAnotherEmail}
+        name='SignIn'
+        component={SignIn}
       />
 
       <Screen 

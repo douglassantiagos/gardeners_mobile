@@ -10,8 +10,11 @@ export const theme = {
     greenLight: '#DAF2E4',
     green: '#486635',
     line: '#95C11F',
+    orange: '#FF7768',
+    orangeDark: '#d15e53',
 
     overlay: 'rgba(0,0,0,0.7)',
+    attention: '#B60000',
   },
 
   fonts: {

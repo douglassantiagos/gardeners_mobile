@@ -3,7 +3,7 @@ import { theme } from "../../global/theme";
 
 export const styles = StyleSheet.create({
   container: {
-    width: '100%',
+    width: 160,
     height: 56,
     backgroundColor: theme.color.primary,
     borderRadius: 8,
@@ -13,8 +13,8 @@ export const styles = StyleSheet.create({
   },
 
   iconWrapper: {
-    width: 56,
-    height: 56,
+    width: 45,
+    height: 45,
     justifyContent: 'center',
     alignItems: 'center',
     borderRightWidth: 1,

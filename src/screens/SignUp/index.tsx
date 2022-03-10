@@ -1,30 +1,27 @@
 import React, { useState } from 'react';
 import { useNavigation } from '@react-navigation/native';
 import { 
-  Image, 
+  Alert,
   Keyboard, 
   KeyboardAvoidingView, 
   Modal, 
   Platform, 
   Text, 
-  TextInput, 
   TouchableOpacity, 
   TouchableWithoutFeedback, 
   View 
 } from 'react-native';
 import Feather from 'react-native-vector-icons/Feather'
+import * as yup from 'yup'
 
 import { styles } from './styles';
 import { theme } from '../../global/theme';
 import { Button } from '../../components/Button';
-import { Background } from '../../components/Background';
 import { BorderlessButton } from 'react-native-gesture-handler';
-import { LinearGradient } from 'expo-linear-gradient';
 import { Input } from '../../components/Input';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 export function SignUp() {
-  const { primary, highligh } = theme.color;
-
   const navigation = useNavigation()  
 
   const handleGoBack = () => {
@@ -36,10 +33,32 @@ export function SignUp() {
   const [phone, setPhone] = useState("");
   const [password, setPassword] = useState("");
 
+  async function handleSignUp() {
+    try {
+      const Schema = yup.object().shape({
+        password: yup.string().required("Senha obrigatória!"),
+        phone: yup.number().required(`Telefone obrigatório! ${'\n'} Ex: DDD + número`),
+        email: yup.string().required("E-mail obrigatório!").email("Esse e-mail é inválido!"),
+        name: yup.string().required('Nome obrigatório')
+      });
+
+      await Schema.validate({ name, email, phone, password });
+    } catch (error) {
+      if (error instanceof yup.ValidationError) {
+        return Alert.alert(error.message);
+      } else {
+        return Alert.alert(
+          "Erro na autenticação",
+          "Verifique suas credenciais."
+        );
+      }
+    }
+  }
+
   return (
-    <>    
+    <SafeAreaView style={{ flex: 1 }}>    
       <KeyboardAvoidingView
-        behavior={Platform.OS === "ios" ? "padding" : "height"}
+        behavior='position' enabled
         style={{ flex: 1 }}
       >
         {/* <Modal
@@ -49,20 +68,19 @@ export function SignUp() {
         > */}        
           <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
             <View style={styles.container}>
-              <LinearGradient 
+              <View 
                 style={styles.pagination}
-                colors={[primary, highligh]}
               >
                 <BorderlessButton onPress={handleGoBack}>
                   <Feather
                     name='chevron-left'
                     size={30}
-                    color={theme.color.background}
+                    color={theme.color.highligh}
                   />
                 </BorderlessButton>
 
                 <Text style={styles.titlePagination}>Cadastro</Text>
-              </LinearGradient>
+              </View>
               
               <View style={styles.ContentTitle}>
                 {/* <Image source={require('../../../assets/icon.png')} style={styles.logo} /> */}
@@ -105,6 +123,7 @@ export function SignUp() {
                 <View>
                   <Button
                     title='Cadastrar'
+                    onPress={handleSignUp}                    
                   />
                 </View>              
 
@@ -117,7 +136,7 @@ export function SignUp() {
                       onPress={handleGoBack}
                   >
                       <Text style={styles.buttonLogin}>
-                          Voltar
+                          Login
                       </Text>
                   </TouchableOpacity>
                 </View>
@@ -126,6 +145,6 @@ export function SignUp() {
           </TouchableWithoutFeedback>
         </KeyboardAvoidingView>
       {/* </Modal> */}
-    </>
+    </SafeAreaView>
   )
 }

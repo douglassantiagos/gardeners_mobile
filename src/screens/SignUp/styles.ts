@@ -3,16 +3,16 @@ import { getStatusBarHeight } from "react-native-iphone-x-helper";
 import { theme } from "../../global/theme";
 
 export const styles = StyleSheet.create({
-  container: {  
-    flex: 1,  
-    backgroundColor: theme.color.background,
+  container: {
+    backgroundColor: theme.color.heading,
+    height: '100%'
   },  
 
   pagination: {
     paddingTop: getStatusBarHeight(), 
     paddingHorizontal: 40,
     width: '100%',
-    height: 104,
+    height: 60,
     flexDirection: 'row',    
     justifyContent: 'center',
     alignItems: 'center',
@@ -23,18 +23,13 @@ export const styles = StyleSheet.create({
     textAlign: 'center',
     fontFamily: theme.fonts.title600,
     fontSize: 20,
-    color: theme.color.background,
+    color: theme.color.highligh,
     paddingRight: 35,
   },
 
   ContentTitle: {
     paddingHorizontal: 40,
   },
-
-  // logo: {
-  //   width: '100%',
-  //   height: 180,
-  // },
 
   title: {
     fontFamily: theme.fonts.title600,
@@ -53,7 +48,6 @@ export const styles = StyleSheet.create({
   },
 
   form: {
-    alignItems: 'center',
     justifyContent: 'center',    
     paddingHorizontal: 40,
   },
@@ -74,12 +68,12 @@ export const styles = StyleSheet.create({
   textQuestion: {
     fontFamily: theme.fonts.subtitle400,
     fontSize: 16,
-    paddingRight: 10,
+    paddingRight: 5,
   },
 
   buttonLogin: {
     fontFamily: theme.fonts.title600,
     fontSize: 16,
-    color: theme.color.primary
+    color: theme.color.orange
   },
 })
